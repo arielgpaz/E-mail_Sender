@@ -1,6 +1,6 @@
-package br.com.note.mail.controller;
+package br.com.grades.email.sender.controller;
 
-import br.com.note.mail.service.SendEmailService;
+import br.com.grades.email.sender.service.SendEmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

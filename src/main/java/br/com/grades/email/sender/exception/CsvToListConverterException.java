@@ -1,4 +1,4 @@
-package br.com.note.mail.exception;
+package br.com.grades.email.sender.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

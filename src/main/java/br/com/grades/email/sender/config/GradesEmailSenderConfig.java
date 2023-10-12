@@ -1,4 +1,4 @@
-package br.com.note.mail.config;
+package br.com.grades.email.sender.config;
 
 
 import org.springframework.context.annotation.Bean;

@@ -1,7 +1,7 @@
-package br.com.note.mail.service;
+package br.com.grades.email.sender.service;
 
-import br.com.note.mail.domain.EmailInfo;
-import br.com.note.mail.util.CsvToListConverter;
+import br.com.grades.email.sender.domain.EmailInfo;
+import br.com.grades.email.sender.util.CsvToListConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

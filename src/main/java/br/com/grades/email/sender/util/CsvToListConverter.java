@@ -1,8 +1,8 @@
-package br.com.note.mail.util;
+package br.com.grades.email.sender.util;
 
-import br.com.note.mail.domain.EmailInfo;
-import br.com.note.mail.domain.Student;
-import br.com.note.mail.exception.CsvToListConverterException;
+import br.com.grades.email.sender.domain.EmailInfo;
+import br.com.grades.email.sender.domain.Student;
+import br.com.grades.email.sender.exception.CsvToListConverterException;
 
 import java.io.*;
 import java.util.ArrayList;

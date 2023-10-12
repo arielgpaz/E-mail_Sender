@@ -1,19 +1,18 @@
-package br.com.note.mail.domain;
+package br.com.grades.email.sender.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmailInfo {
+public class Student {
 
-    private Student student;
+    private String name;
 
-    private List<String> grades;
+    private String email;
+
 }
