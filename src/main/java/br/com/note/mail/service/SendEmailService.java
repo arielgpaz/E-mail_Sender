@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -17,41 +18,50 @@ public class SendEmailService {
 
     private final JavaMailSender emailSender;
 
-    public void send(InputStream inputStream) {
+    private static final String FROM = "emailnotas10@gmail.com";
+
+    public void send(InputStream inputStream, String emailSubject, String additionalMessage) {
 
         try {
             List<EmailInfo> emailInfos = CsvToListConverter.convertCsvToList(inputStream);
+            
+            List<String> emailHeaders = this.getEmaiHeadersAndRemoveFromList(emailInfos);
 
-            emailInfos.forEach(this::sendEmail);
+            emailInfos.forEach(emailInfo -> this.createEmailAndSend(emailInfo, emailSubject, emailHeaders, additionalMessage));
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void sendEmail(EmailInfo emailInfo) {
+    private List<String> getEmaiHeadersAndRemoveFromList(List<EmailInfo> emailInfos) {
+        List<String> emailHeaders = emailInfos.get(0).getGrades();
+        emailInfos.remove(0);
+        return emailHeaders;
+    }
+
+    private void createEmailAndSend(EmailInfo emailInfo, String emailSubject, List<String> emailHeaders, String additionalMessage) {
+        
+        String subject = emailSubject + " - " + emailInfo.getStudent().getName();
+        
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("emailnotas10@gmail.com");
+        message.setFrom(FROM);
         message.setTo(emailInfo.getStudent().getEmail());
-        message.setSubject("Notas");
-        message.setText(createEmailMessage(emailInfo.getGrades()));
+        message.setSubject(subject);
+        message.setText(this.createEmailMessage(emailInfo.getGrades(), emailHeaders, additionalMessage));
+        
         emailSender.send(message);
     }
 
-    private String createEmailMessage(List<String> grades) {
+    private String createEmailMessage(List<String> grades, List<String> emailHeaders, String additionalMessage) {
 
-        int gradesQtty = grades.size();
+        StringBuilder body = new StringBuilder(additionalMessage + "\n\n");
 
-        StringBuilder body = new StringBuilder();
-
-        for (int i = 0; i < gradesQtty - 1; i++) {
-
-            if (i == gradesQtty - 1) {
-                body.append("Total: ").append(grades.get(gradesQtty - 1));
-            }
-
-            body.append("Nota ").append(i).append(": ").append(grades.get(i));
-        }
+        IntStream.range(0, grades.size())
+                .forEach(i -> body.append(emailHeaders.get(i))
+                        .append(": ")
+                        .append(grades.get(i))
+                        .append("\n"));
 
         return body.toString();
     }

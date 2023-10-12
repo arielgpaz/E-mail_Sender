@@ -2,6 +2,7 @@ package br.com.note.mail.util;
 
 import br.com.note.mail.domain.EmailInfo;
 import br.com.note.mail.domain.Student;
+import br.com.note.mail.exception.CsvToListConverterException;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class CsvToListConverter {
             return records;
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CsvToListConverterException(e);
         }
     }
 

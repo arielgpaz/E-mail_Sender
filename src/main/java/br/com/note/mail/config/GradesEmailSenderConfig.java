@@ -16,15 +16,14 @@ public class GradesEmailSenderConfig {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
-
         mailSender.setUsername("emailnotas10@gmail.com");
-        mailSender.setPassword("#EmailNotas10");
+        mailSender.setPassword("nrdw cgaa lzap qxix");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true");
+//        props.put("mail.debug", "true");
 
         return mailSender;
     }
