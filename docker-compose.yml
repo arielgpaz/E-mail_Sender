@@ -2,7 +2,7 @@ version: '2'
 
 services:
   grades_email_sender:
-    image: 'grades_email_sender:1.0'
+    image: 'grades_email_sender:1.0.0'
     build:
       context: .
     container_name: grades_email_sender
@@ -11,9 +11,9 @@ services:
     depends_on:
       - grades_email_sender_db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://grades_email_sender_db:5432/grades
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://grades_email_sender_db:5432/grades_email_sender
       - SPRING_DATASOURCE_USERNAME=grades_email_sender
-      - SPRING_DATASOURCE_PASSWORD=#EmailNotas10
+      - SPRING_DATASOURCE_PASSWORD=EmailNotas10
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   grades_email_sender_db:
@@ -25,4 +25,5 @@ services:
       - '5432:5432'
     environment:
       - POSTGRES_USER=grades_email_sender
-      - POSTGRES_PASSWORD=#EmailNotas10
+      - POSTGRES_PASSWORD=EmailNotas10
+      - POSTGRES_DB=grades_email_sender
