@@ -15,7 +15,7 @@ public class CsvToListConverter {
 
     private static final String COMMA_DELIMITER = ";";
 
-    public static List<EmailInfo> convertCsvToList(InputStream inputStream) throws FileNotFoundException {
+    public static List<EmailInfo> convertCsvToList(InputStream inputStream) {
 
         List<EmailInfo> records = new ArrayList<>();
 
