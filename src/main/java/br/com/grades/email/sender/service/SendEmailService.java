@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static java.util.Objects.nonNull;
+
 @Service
 @RequiredArgsConstructor
 public class SendEmailService {
@@ -63,7 +65,7 @@ public class SendEmailService {
 
     private String createEmailMessage(List<String> grades, List<String> emailHeaders, String additionalMessage) {
 
-        StringBuilder body = new StringBuilder(additionalMessage + "\n\n");
+        var body = nonNull(additionalMessage) ? new StringBuilder(additionalMessage + "\n\n") : new StringBuilder();
 
         IntStream.range(0, grades.size())
                 .forEach(i -> body.append(emailHeaders.get(i))
