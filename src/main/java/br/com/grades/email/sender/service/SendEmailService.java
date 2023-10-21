@@ -2,6 +2,7 @@ package br.com.grades.email.sender.service;
 
 import br.com.grades.email.sender.domain.EmailInfo;
 import br.com.grades.email.sender.domain.EmailModel;
+import br.com.grades.email.sender.domain.EmailStatusCounter;
 import br.com.grades.email.sender.domain.StatusEmail;
 import br.com.grades.email.sender.repository.EmailRepository;
 import br.com.grades.email.sender.util.CsvToListConverter;
@@ -28,13 +29,13 @@ public class SendEmailService {
 
     private static final String FROM = "emailnotas10@gmail.com";
 
-    public void send(InputStream inputStream, String emailSubject, String additionalMessage) {
+    public EmailStatusCounter send(InputStream inputStream, String emailSubject, String additionalMessage) {
 
         List<EmailInfo> emailInfos = CsvToListConverter.convertCsvToList(inputStream);
 
         List<EmailModel> emailsModel = this.buildEmailsModels(emailSubject, additionalMessage, emailInfos);
 
-        this.sendEmails(emailsModel);
+       return this.sendEmails(emailsModel);
     }
 
     private List<EmailModel> buildEmailsModels(String emailSubject, String additionalMessage, List<EmailInfo> emailInfos) {
@@ -76,7 +77,10 @@ public class SendEmailService {
         return body.toString();
     }
 
-    private void sendEmails(List<EmailModel> emails) {
+    private EmailStatusCounter sendEmails(List<EmailModel> emails) {
+
+        EmailStatusCounter counter = new EmailStatusCounter();
+        counter.setTotal(emails.size());
 
         emails.forEach(email -> {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -88,11 +92,15 @@ public class SendEmailService {
             try {
                 emailSender.send(message);
                 email.setStatusEmail(StatusEmail.SENT.getValue());
+                counter.setSent(counter.getSent() + 1);
             } catch (MailException e) {
                 email.setStatusEmail(StatusEmail.ERROR.getValue());
+                counter.setError(counter.getError() + 1);
             } finally {
                 emailRepository.save(email);
             }
         });
+
+        return counter;
     }
 }
