@@ -1,4 +1,4 @@
-FROM amazoncorretto:17.0.8
+FROM amazoncorretto:17.0.9
 
 ENV APP_NAME=grades_email_sender
 
