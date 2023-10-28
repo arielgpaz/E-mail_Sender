@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class EmailConsultsService {
+public class ConsultEmailsService {
 
     private final EmailRepository emailRepository;
 

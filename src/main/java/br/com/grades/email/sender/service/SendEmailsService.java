@@ -5,7 +5,7 @@ import br.com.grades.email.sender.domain.EmailModel;
 import br.com.grades.email.sender.domain.EmailStatusCounter;
 import br.com.grades.email.sender.domain.StatusEmail;
 import br.com.grades.email.sender.repository.EmailRepository;
-import br.com.grades.email.sender.util.CsvToListConverter;
+import br.com.grades.email.sender.util.CsvConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -22,7 +22,7 @@ import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
-public class SendEmailService {
+public class SendEmailsService {
 
     private final JavaMailSender emailSender;
     private final EmailRepository emailRepository;
@@ -31,7 +31,7 @@ public class SendEmailService {
 
     public EmailStatusCounter send(InputStream inputStream, String emailSubject, String additionalMessage) {
 
-        List<EmailInfo> emailInfos = CsvToListConverter.convertCsvToList(inputStream);
+        List<EmailInfo> emailInfos = CsvConverter.convertCsvToList(inputStream);
 
         List<EmailModel> emailsModel = this.buildEmailsModels(emailSubject, additionalMessage, emailInfos);
 
@@ -83,11 +83,8 @@ public class SendEmailService {
         counter.setTotal(emails.size());
 
         emails.forEach(email -> {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(email.getEmailFrom());
-            message.setTo(email.getEmailTo());
-            message.setSubject(email.getSubject());
-            message.setText(email.getText());
+
+            SimpleMailMessage message = getMessage(email);
 
             try {
                 emailSender.send(message);
@@ -102,5 +99,14 @@ public class SendEmailService {
         });
 
         return counter;
+    }
+
+    private static SimpleMailMessage getMessage(EmailModel email) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(email.getEmailFrom());
+        message.setTo(email.getEmailTo());
+        message.setSubject(email.getSubject());
+        message.setText(email.getText());
+        return message;
     }
 }
