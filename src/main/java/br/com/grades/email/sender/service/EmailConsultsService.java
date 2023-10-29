@@ -15,12 +15,10 @@ public class EmailConsultsService {
     private final EmailRepository emailRepository;
 
     public List<EmailModel> getEmailsByStatus(String status, LocalDateTime startDate, LocalDateTime endDate) {
-        return emailRepository.findByStatus(
-                status, startDate, endDate);
+        return emailRepository.findByStatus(status, startDate, endDate);
     }
 
     public List<EmailModel> getEmailsTo(String to, LocalDateTime startDate, LocalDateTime endDate) {
-        return emailRepository.findByEmailTo(
-                to, startDate, endDate);
+        return emailRepository.findByEmailTo(to, startDate, endDate);
     }
 }

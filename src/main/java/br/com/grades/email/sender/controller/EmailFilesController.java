@@ -5,6 +5,7 @@ import br.com.grades.email.sender.exception.EmailSenderException;
 import br.com.grades.email.sender.service.DownloadEmailsService;
 import br.com.grades.email.sender.service.SendEmailsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 @RestController
+@Slf4j
 @RequestMapping(value = "/grades")
 @RequiredArgsConstructor
 public class EmailFilesController {
@@ -30,6 +32,7 @@ public class EmailFilesController {
             return ResponseEntity.ok(counter);
 
         } catch (IOException e) {
+            log.info("Falha ao ler o arquivo enviado.", e);
             throw new EmailSenderException("Falha ao ler o arquivo enviado.", e);
         }
     }

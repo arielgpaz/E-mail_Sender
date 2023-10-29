@@ -5,6 +5,7 @@ import br.com.grades.email.sender.domain.EmailModel;
 import br.com.grades.email.sender.domain.Student;
 import br.com.grades.email.sender.exception.CsvConverterException;
 import com.opencsv.CSVWriter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -17,23 +18,27 @@ import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+@Slf4j
 public class CsvConverter {
 
     private static final String COMMA_DELIMITER = ";";
     private static final String EMAILS_FILE_NAME = "emails.csv";
 
     public static List<EmailInfo> convertCsvToList(InputStream inputStream) {
+        log.info("Convertendo arquivo csv em uma lista.");
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, UTF_8))) {
 
             return extractEmailInfosFromCsv(br);
 
         } catch (IOException e) {
+            log.info("Falha ao extrair dados da planilha", e);
             throw new CsvConverterException("Falha ao extrair dados da planilha", e);
         }
     }
 
     private static List<EmailInfo> extractEmailInfosFromCsv(BufferedReader br) throws IOException {
+        log.info("Extraindo dados.");
 
         List<EmailInfo> records = new ArrayList<>();
 
@@ -66,17 +71,20 @@ public class CsvConverter {
     }
 
     public static byte[] convertListToCsv(List<EmailModel> emails) {
+        log.info("Convertendo lista para csv.");
 
         generateCsv(emails);
 
         try {
             return Files.readAllBytes(Paths.get(EMAILS_FILE_NAME));
         } catch (IOException e) {
+            log.info("Erro inesperado ao converter arquivo csv em bytes.", e);
             throw new CsvConverterException("Erro inesperado do sistema.", e);
         }
     }
 
     private static void generateCsv(List<EmailModel> emails) {
+        log.info("Gerando arquivo csv.");
 
         try (
                 var fos = new FileOutputStream(CsvConverter.EMAILS_FILE_NAME);
@@ -84,15 +92,18 @@ public class CsvConverter {
                 var csvWriter = new CSVWriter(writer, ';', '\"', '\\', "\n")
         ) {
 
+            log.info("Criando cabeçalhos.");
             var headers = getHeaders();
             csvWriter.writeNext(headers);
 
+            log.info("Preenchendo linha com informações do email.");
             emails.forEach(email -> {
                 String[] data = getData(email);
                 csvWriter.writeNext(data);
             });
 
         } catch (IOException e) {
+            log.info("Não foi possível transformar a lista em csv.", e);
             throw new CsvConverterException("Não foi possível transformar a lista em csv.", e);
         }
     }
