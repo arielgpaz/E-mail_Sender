@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping(value = "/grades")
 @RequiredArgsConstructor
-public class SendEmailController {
+public class EmailFilesController {
 
     private final SendEmailsService sendEmailsService;
     private final DownloadEmailsService downloadEmailsService;

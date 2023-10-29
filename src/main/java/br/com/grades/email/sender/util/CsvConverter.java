@@ -20,28 +20,34 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class CsvConverter {
 
     private static final String COMMA_DELIMITER = ";";
+    private static final String EMAILS_FILE_NAME = "emails.csv";
 
     public static List<EmailInfo> convertCsvToList(InputStream inputStream) {
 
-        List<EmailInfo> records = new ArrayList<>();
-
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, UTF_8))) {
-            String line;
 
-            while ((line = br.readLine()) != null) {
-
-                String[] values = line.split(COMMA_DELIMITER);
-
-                EmailInfo emailInfo = createEmailInfo(values);
-
-                records.add(emailInfo);
-            }
-
-            return records;
+            return extractEmailInfosFromCsv(br);
 
         } catch (IOException e) {
             throw new CsvConverterException("Falha ao extrair dados da planilha", e);
         }
+    }
+
+    private static List<EmailInfo> extractEmailInfosFromCsv(BufferedReader br) throws IOException {
+
+        List<EmailInfo> records = new ArrayList<>();
+
+        String line;
+
+        while ((line = br.readLine()) != null) {
+
+            String[] values = line.split(COMMA_DELIMITER);
+
+            EmailInfo emailInfo = createEmailInfo(values);
+
+            records.add(emailInfo);
+        }
+        return records;
     }
 
     private static EmailInfo createEmailInfo(String[] values) {
@@ -51,7 +57,7 @@ public class CsvConverter {
                 .email(values[1])
                 .build();
 
-        List<String> grades = new ArrayList<>(Arrays.asList(values).subList(2, values.length));
+        List<String> grades = Arrays.asList(values).subList(2, values.length);
 
         return EmailInfo.builder()
                 .student(student)
@@ -61,23 +67,23 @@ public class CsvConverter {
 
     public static byte[] convertListToCsv(List<EmailModel> emails) {
 
-        var csvFile = "emails.csv";
-
-        generateCsv(emails, csvFile);
+        generateCsv(emails);
 
         try {
-            return Files.readAllBytes(Paths.get(csvFile));
+            return Files.readAllBytes(Paths.get(EMAILS_FILE_NAME));
         } catch (IOException e) {
             throw new CsvConverterException("Erro inesperado do sistema.", e);
         }
     }
 
-    private static void generateCsv(List<EmailModel> emails, String csvFile) {
-//        try (var writer = new CSVWriter(new FileWriter(csvFile), ';', '\"', '\\', "\n")) {
+    private static void generateCsv(List<EmailModel> emails) {
+
         try (
-                var writer = new OutputStreamWriter(new FileOutputStream(csvFile), "windows-1252");
+                var fos = new FileOutputStream(CsvConverter.EMAILS_FILE_NAME);
+                var writer = new OutputStreamWriter(fos, "windows-1252");
                 var csvWriter = new CSVWriter(writer, ';', '\"', '\\', "\n")
         ) {
+
             var headers = getHeaders();
             csvWriter.writeNext(headers);
 
@@ -91,21 +97,8 @@ public class CsvConverter {
         }
     }
 
-    private static String[] getData(EmailModel email) {
-
-        var dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        var data = email.getSendDateEmail().format(dateFormat);
-
-        return new String[]{
-                email.getEmailTo(),
-                email.getSubject(),
-                email.getText(),
-                data,
-                email.getStatusEmail()
-        };
-    }
-
     private static String[] getHeaders() {
+
         Field[] fields = EmailModel.class.getDeclaredFields();
         String[] headers = new String[fields.length - 3];
 
@@ -114,5 +107,19 @@ public class CsvConverter {
         }
 
         return headers;
+    }
+
+    private static String[] getData(EmailModel email) {
+
+        var dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        var date = email.getSendDateEmail().format(dateFormat);
+
+        return new String[]{
+                email.getEmailTo(),
+                email.getSubject(),
+                email.getText(),
+                date,
+                email.getStatusEmail()
+        };
     }
 }
