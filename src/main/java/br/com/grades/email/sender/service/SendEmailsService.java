@@ -7,6 +7,7 @@ import br.com.grades.email.sender.domain.StatusEmail;
 import br.com.grades.email.sender.repository.EmailRepository;
 import br.com.grades.email.sender.util.CsvConverter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,6 +22,7 @@ import java.util.stream.IntStream;
 import static java.util.Objects.nonNull;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class SendEmailsService {
 
@@ -31,11 +33,13 @@ public class SendEmailsService {
 
     public EmailStatusCounter send(InputStream inputStream, String emailSubject, String additionalMessage) {
 
+        log.info("Convertendo arquivo csv em uma lista.");
         List<EmailInfo> emailInfos = CsvConverter.convertCsvToList(inputStream);
 
+        log.info("Construindo objetos de emails.");
         List<EmailModel> emailsModel = this.buildEmailsModels(emailSubject, additionalMessage, emailInfos);
 
-       return this.sendEmails(emailsModel);
+        return this.sendEmails(emailsModel);
     }
 
     private List<EmailModel> buildEmailsModels(String emailSubject, String additionalMessage, List<EmailInfo> emailInfos) {
@@ -65,6 +69,7 @@ public class SendEmailsService {
     }
 
     private String createEmailMessage(List<String> grades, List<String> emailHeaders, String additionalMessage) {
+        log.info("Construindo mensagens de emails.");
 
         var body = nonNull(additionalMessage) ? new StringBuilder(additionalMessage + "\n\n") : new StringBuilder();
 
@@ -78,6 +83,7 @@ public class SendEmailsService {
     }
 
     private EmailStatusCounter sendEmails(List<EmailModel> emails) {
+        log.info("Enviando emails.");
 
         EmailStatusCounter counter = new EmailStatusCounter();
         counter.setTotal(emails.size());
@@ -91,6 +97,7 @@ public class SendEmailsService {
                 email.setStatusEmail(StatusEmail.SENT.getValue());
                 counter.setSent(counter.getSent() + 1);
             } catch (MailException e) {
+                log.error("Não foi possível enviar o email para {}.", email.getEmailTo(), e);
                 email.setStatusEmail(StatusEmail.ERROR.getValue());
                 counter.setError(counter.getError() + 1);
             } finally {

@@ -25,14 +25,13 @@ public class CsvConverter {
     private static final String EMAILS_FILE_NAME = "emails.csv";
 
     public static List<EmailInfo> convertCsvToList(InputStream inputStream) {
-        log.info("Convertendo arquivo csv em uma lista.");
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, UTF_8))) {
 
             return extractEmailInfosFromCsv(br);
 
         } catch (IOException e) {
-            log.info("Falha ao extrair dados da planilha", e);
+            log.error("Falha ao extrair dados da planilha", e);
             throw new CsvConverterException("Falha ao extrair dados da planilha", e);
         }
     }
@@ -78,7 +77,7 @@ public class CsvConverter {
         try {
             return Files.readAllBytes(Paths.get(EMAILS_FILE_NAME));
         } catch (IOException e) {
-            log.info("Erro inesperado ao converter arquivo csv em bytes.", e);
+            log.error("Erro inesperado ao converter arquivo csv em bytes.", e);
             throw new CsvConverterException("Erro inesperado do sistema.", e);
         }
     }
@@ -103,7 +102,7 @@ public class CsvConverter {
             });
 
         } catch (IOException e) {
-            log.info("Não foi possível transformar a lista em csv.", e);
+            log.error("Não foi possível transformar a lista em csv.", e);
             throw new CsvConverterException("Não foi possível transformar a lista em csv.", e);
         }
     }

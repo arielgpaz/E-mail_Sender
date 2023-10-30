@@ -24,6 +24,7 @@ public class EmailFilesController {
 
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
     public ResponseEntity<EmailStatusCounter> sendGrades(@RequestBody MultipartFile file, @RequestParam String emailSubject, @RequestParam(required = false) String additionalMessage) {
+        log.info("Iniciando envio dos emails: {}.", emailSubject);
 
         try {
 
@@ -32,7 +33,7 @@ public class EmailFilesController {
             return ResponseEntity.ok(counter);
 
         } catch (IOException e) {
-            log.info("Falha ao ler o arquivo enviado.", e);
+            log.error("Falha ao ler o arquivo enviado.", e);
             throw new EmailSenderException("Falha ao ler o arquivo enviado.", e);
         }
     }
@@ -41,6 +42,7 @@ public class EmailFilesController {
     public ResponseEntity<byte[]> getGradesCsv(@RequestParam(required = false) String status,
                                                @RequestParam(required = false) LocalDateTime startDate,
                                                @RequestParam(required = false) LocalDateTime endDate) {
+        log.info("Gerando csv de emails com status {}, enviados entre {} e {}.", status, startDate, endDate);
 
         byte[] file = downloadEmailsService.getCsvFile(status, startDate, endDate);
 
