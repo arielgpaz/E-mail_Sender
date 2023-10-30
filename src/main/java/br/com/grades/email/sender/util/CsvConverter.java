@@ -3,7 +3,7 @@ package br.com.grades.email.sender.util;
 import br.com.grades.email.sender.domain.EmailInfo;
 import br.com.grades.email.sender.domain.EmailModel;
 import br.com.grades.email.sender.domain.Student;
-import br.com.grades.email.sender.exception.CsvConverterException;
+import br.com.grades.email.sender.exception.InternalServerErrorException;
 import com.opencsv.CSVWriter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,8 +31,8 @@ public class CsvConverter {
             return extractEmailInfosFromCsv(br);
 
         } catch (IOException e) {
-            log.error("Falha ao extrair dados da planilha", e);
-            throw new CsvConverterException("Falha ao extrair dados da planilha", e);
+            log.error("Falha ao extrair dados da planilha.", e);
+            throw new InternalServerErrorException("Falha ao extrair dados da planilha.", e);
         }
     }
 
@@ -78,7 +78,7 @@ public class CsvConverter {
             return Files.readAllBytes(Paths.get(EMAILS_FILE_NAME));
         } catch (IOException e) {
             log.error("Erro inesperado ao converter arquivo csv em bytes.", e);
-            throw new CsvConverterException("Erro inesperado do sistema.", e);
+            throw new InternalServerErrorException("Erro inesperado do sistema.", e);
         }
     }
 
@@ -103,7 +103,7 @@ public class CsvConverter {
 
         } catch (IOException e) {
             log.error("Não foi possível transformar a lista em csv.", e);
-            throw new CsvConverterException("Não foi possível transformar a lista em csv.", e);
+            throw new InternalServerErrorException("Não foi possível transformar a lista em csv.", e);
         }
     }
 

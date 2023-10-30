@@ -1,7 +1,7 @@
 package br.com.grades.email.sender.controller;
 
 import br.com.grades.email.sender.domain.EmailStatusCounter;
-import br.com.grades.email.sender.exception.EmailSenderException;
+import br.com.grades.email.sender.exception.BadRequestException;
 import br.com.grades.email.sender.service.DownloadEmailsService;
 import br.com.grades.email.sender.service.SendEmailsService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,8 @@ public class EmailFilesController {
     public ResponseEntity<EmailStatusCounter> sendGrades(@RequestBody MultipartFile file, @RequestParam String emailSubject, @RequestParam(required = false) String additionalMessage) {
         log.info("Iniciando envio dos emails: {}.", emailSubject);
 
+        validadeFileExtension(file.getOriginalFilename());
+
         try {
 
             EmailStatusCounter counter = sendEmailsService.send(file.getInputStream(), emailSubject, additionalMessage);
@@ -34,7 +36,7 @@ public class EmailFilesController {
 
         } catch (IOException e) {
             log.error("Falha ao ler o arquivo enviado.", e);
-            throw new EmailSenderException("Falha ao ler o arquivo enviado.", e);
+            throw new BadRequestException("Falha ao ler o arquivo enviado.", e);
         }
     }
 
@@ -47,5 +49,22 @@ public class EmailFilesController {
         byte[] file = downloadEmailsService.getCsvFile(status, startDate, endDate);
 
         return ResponseEntity.ok(file);
+    }
+
+    private static void validadeFileExtension(String filename) {
+
+        if (filename != null) {
+
+            String fileExtension = filename.substring(filename.lastIndexOf("."));
+
+            if (".pdf".equalsIgnoreCase(fileExtension)) {
+
+                String message = "Extensão " + fileExtension + " não suportada.";
+
+                log.error(message);
+
+                throw new BadRequestException(message, null);
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
 package br.com.grades.email.sender.service;
 
 import br.com.grades.email.sender.domain.EmailModel;
-import br.com.grades.email.sender.exception.EmailsNotFoundException;
+import br.com.grades.email.sender.exception.NotFoundException;
 import br.com.grades.email.sender.repository.EmailRepository;
 import br.com.grades.email.sender.util.CsvConverter;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class DownloadEmailsService {
 
         if (emails.isEmpty()) {
             log.error("Nenhum email encontrado");
-            throw new EmailsNotFoundException("Nenhum email encontrado");
+            throw new NotFoundException("Nenhum email encontrado.");
         }
 
         return CsvConverter.convertListToCsv(emails);
