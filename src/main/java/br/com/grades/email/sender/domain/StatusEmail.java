@@ -7,9 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum StatusEmail {
 
-    SENT("Sent"),
-    ERROR("Error");
+    SENT,
+    ERROR
 
-    private final String value;
 
 }

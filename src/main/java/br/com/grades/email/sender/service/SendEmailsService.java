@@ -69,7 +69,6 @@ public class SendEmailsService {
     }
 
     private String createEmailMessage(List<String> grades, List<String> emailHeaders, String additionalMessage) {
-        log.info("Construindo mensagens de emails.");
 
         var body = nonNull(additionalMessage) ? new StringBuilder(additionalMessage + "\n\n") : new StringBuilder();
 
@@ -94,11 +93,11 @@ public class SendEmailsService {
 
             try {
                 emailSender.send(message);
-                email.setStatusEmail(StatusEmail.SENT.getValue());
+                email.setStatusEmail(StatusEmail.SENT.name());
                 counter.setSent(counter.getSent() + 1);
             } catch (MailException e) {
                 log.error("Não foi possível enviar o email para {}.", email.getEmailTo(), e);
-                email.setStatusEmail(StatusEmail.ERROR.getValue());
+                email.setStatusEmail(StatusEmail.ERROR.name());
                 counter.setError(counter.getError() + 1);
             } finally {
                 emailRepository.save(email);

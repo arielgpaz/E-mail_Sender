@@ -21,26 +21,16 @@ public class EmailConsultsController {
 
     private final EmailConsultsService emailConsultsService;
 
-    @GetMapping(value = "/status")
-    public ResponseEntity<List<EmailModel>> getEmailsByStatus(@RequestParam(required = false) String status,
-                                                              @RequestParam(required = false) LocalDateTime startDate,
-                                                              @RequestParam(required = false) LocalDateTime endDate) {
-        log.info("Consultando emails {}, enviados entre {} e {}", status, startDate, endDate);
+    @GetMapping
+    public ResponseEntity<List<EmailModel>> getEmails(@RequestParam(required = false) String status,
+                                                      @RequestParam(required = false) String to,
+                                                      @RequestParam(required = false) LocalDateTime startDate,
+                                                      @RequestParam(required = false) LocalDateTime endDate) {
+        log.info("Consultando emails");
 
-        List<EmailModel> emailsByStatus = emailConsultsService.getEmailsByStatus(status, startDate, endDate);
+        List<EmailModel> emailsByStatus = emailConsultsService.getEmails(status, to, startDate, endDate);
 
         return ResponseEntity.ok(emailsByStatus);
-    }
-
-    @GetMapping(value = "/to")
-    public ResponseEntity<List<EmailModel>> getEmailsTo(@RequestParam(required = false) String to,
-                                                        @RequestParam(required = false) LocalDateTime startDate,
-                                                        @RequestParam(required = false) LocalDateTime endDate) {
-        log.info("Consultando emails enviados para {}, entre {} e {}", to, startDate, endDate);
-
-        List<EmailModel> emailsTo = emailConsultsService.getEmailsTo(to, startDate, endDate);
-
-        return ResponseEntity.ok(emailsTo);
     }
 
 }

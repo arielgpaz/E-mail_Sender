@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @Slf4j
-@RequestMapping(value = "/grades")
+@RequestMapping(value = "/email/file")
 @RequiredArgsConstructor
 public class EmailFilesController {
 
@@ -42,11 +42,12 @@ public class EmailFilesController {
 
     @GetMapping(value = "/download", produces = "text/csv")
     public ResponseEntity<byte[]> getGradesCsv(@RequestParam(required = false) String status,
+                                               @RequestParam(required = false) String to,
                                                @RequestParam(required = false) LocalDateTime startDate,
                                                @RequestParam(required = false) LocalDateTime endDate) {
         log.info("Gerando csv de emails com status {}, enviados entre {} e {}.", status, startDate, endDate);
 
-        byte[] file = downloadEmailsService.getCsvFile(status, startDate, endDate);
+        byte[] file = downloadEmailsService.getCsvFile(status, to, startDate, endDate);
 
         return ResponseEntity.ok(file);
     }
