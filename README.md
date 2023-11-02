@@ -35,3 +35,8 @@ Este projeto pode ser usado através do Docker, estando na pasta raiz do projeto
 |--------|-----------|----------|----------|-----|----------|-------|
 | Ariel  | abc@d.com | 2,5      | 3,0      | ... | 4,5      | 10,0  |
 | Fulano | abc@d.com | 2,5      | 3,0      | ... | 4,5      | 10,0  |
+
+## Melhorias a serem feitas
+1. Criar um CRUD para cadastrar os alunos;
+2. Escrever as informações recebidas pela planinha numa mensageria
+(ex.: Kafka, Rabitt MQ) para enviar os e-mails posteriormente.
