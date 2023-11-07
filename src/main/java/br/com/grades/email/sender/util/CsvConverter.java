@@ -122,14 +122,14 @@ public class CsvConverter {
     private static String[] getData(EmailModel email) {
 
         var dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        var date = email.getSendDateEmail().format(dateFormat);
+        var date = email.getSendDate().format(dateFormat);
 
         return new String[]{
-                email.getEmailTo(),
+                email.getSendTo(),
                 email.getSubject(),
                 email.getText(),
                 date,
-                email.getStatusEmail()
+                email.getStatus()
         };
     }
 }

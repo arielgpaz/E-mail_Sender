@@ -13,7 +13,7 @@ public class EmailSpecifications {
     public static Specification<EmailModel> byStatus(String status) {
         return (root, query, criteriaBuilder) -> {
             if (isNotBlank(status)) {
-                return criteriaBuilder.equal(root.get("statusEmail"), status.toUpperCase());
+                return criteriaBuilder.equal(root.get("status"), status.toUpperCase());
             }
             return null;
         };
@@ -22,7 +22,7 @@ public class EmailSpecifications {
     public static Specification<EmailModel> byTo(String to) {
         return (root, query, criteriaBuilder) -> {
             if (isNotBlank(to)) {
-                return criteriaBuilder.equal(root.get("emailTo"), to);
+                return criteriaBuilder.equal(root.get("sendTo"), to);
             }
             return null;
         };
@@ -31,7 +31,7 @@ public class EmailSpecifications {
     public static Specification<EmailModel> byStartDate(LocalDateTime startDate) {
         return (root, query, criteriaBuilder) -> {
             if (nonNull(startDate)) {
-                return criteriaBuilder.greaterThanOrEqualTo(root.get("sendDateEmail"), startDate);
+                return criteriaBuilder.greaterThanOrEqualTo(root.get("sendDate"), startDate);
             }
             return null;
         };
@@ -40,7 +40,7 @@ public class EmailSpecifications {
     public static Specification<EmailModel> byEndDate(LocalDateTime endDate) {
         return (root, query, criteriaBuilder) -> {
             if (nonNull(endDate)) {
-                return criteriaBuilder.lessThanOrEqualTo(root.get("sendDateEmail"), endDate);
+                return criteriaBuilder.lessThanOrEqualTo(root.get("sendDate"), endDate);
             }
             return null;
         };
@@ -48,7 +48,7 @@ public class EmailSpecifications {
 
     public static Specification<EmailModel> orderByEmailTo(Specification<EmailModel> spec) {
         return (root, query, criteriaBuilder) -> {
-            query.orderBy(criteriaBuilder.asc(root.get("emailTo")));
+            query.orderBy(criteriaBuilder.asc(root.get("sendTo")));
             return spec.toPredicate(root, query, criteriaBuilder);
         };
     }

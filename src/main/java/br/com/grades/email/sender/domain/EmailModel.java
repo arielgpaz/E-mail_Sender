@@ -21,18 +21,18 @@ public class EmailModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long emailId;
+    private Long id;
 
-    private String emailFrom;
+    private String sendFrom;
 
-    private String emailTo;
+    private String sendTo;
 
     private String subject;
 
     @Column(columnDefinition = "TEXT")
     private String text;
 
-    private LocalDateTime sendDateEmail;
+    private LocalDateTime sendDate;
 
-    private String statusEmail;
+    private String status;
 }

@@ -23,7 +23,11 @@ public class EmailFilesController {
     private final DownloadEmailsService downloadEmailsService;
 
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
-    public ResponseEntity<EmailStatusCounter> sendGrades(@RequestBody MultipartFile file, @RequestParam String emailSubject, @RequestParam(required = false) String additionalMessage) {
+    public ResponseEntity<EmailStatusCounter> sendGrades(
+            @RequestBody MultipartFile file,
+            @RequestParam String emailSubject,
+            @RequestParam(required = false) String additionalMessage
+    ) {
         log.info("Iniciando envio dos emails: {}.", emailSubject);
 
         validadeFileExtension(file.getOriginalFilename());

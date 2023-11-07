@@ -50,11 +50,11 @@ public class SendEmailsService {
 
         emailInfos.forEach(emailInfo -> {
             EmailModel emailModel = EmailModel.builder()
-                    .emailFrom(FROM)
-                    .emailTo(emailInfo.getStudent().getEmail())
+                    .sendFrom(FROM)
+                    .sendTo(emailInfo.getStudent().getEmail())
                     .subject(emailSubject + " - " + emailInfo.getStudent().getName())
                     .text(this.createEmailMessage(emailInfo.getGrades(), emailHeaders, additionalMessage))
-                    .sendDateEmail(LocalDateTime.now())
+                    .sendDate(LocalDateTime.now())
                     .build();
             emailsModel.add(emailModel);
         });
@@ -93,11 +93,11 @@ public class SendEmailsService {
 
             try {
                 emailSender.send(message);
-                email.setStatusEmail(StatusEmail.SENT.name());
+                email.setStatus(StatusEmail.SENT.name());
                 counter.setSent(counter.getSent() + 1);
             } catch (MailException e) {
-                log.error("Não foi possível enviar o email para {}.", email.getEmailTo(), e);
-                email.setStatusEmail(StatusEmail.ERROR.name());
+                log.error("Não foi possível enviar o email para {}.", email.getSendTo(), e);
+                email.setStatus(StatusEmail.ERROR.name());
                 counter.setError(counter.getError() + 1);
             } finally {
                 emailRepository.save(email);
@@ -109,8 +109,8 @@ public class SendEmailsService {
 
     private static SimpleMailMessage getMessage(EmailModel email) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(email.getEmailFrom());
-        message.setTo(email.getEmailTo());
+        message.setFrom(email.getSendFrom());
+        message.setTo(email.getSendTo());
         message.setSubject(email.getSubject());
         message.setText(email.getText());
         return message;
