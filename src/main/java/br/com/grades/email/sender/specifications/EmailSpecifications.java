@@ -1,6 +1,7 @@
 package br.com.grades.email.sender.specifications;
 
 import br.com.grades.email.sender.domain.EmailModel;
+import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@UtilityClass
 public class EmailSpecifications {
 
     public static Specification<EmailModel> byStatus(String status) {

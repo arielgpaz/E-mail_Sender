@@ -15,6 +15,7 @@ e enviar as notas para cada um deles.
 - ``Spring Boot Starter Mail``
 - ``OpenCSV``
 - ``Swagger``
+- ``Docker``
 
 ## Funcionalidades
 
@@ -38,5 +39,5 @@ Este projeto pode ser usado através do Docker, estando na pasta raiz do projeto
 
 ## Melhorias a serem feitas
 1. Criar um CRUD para cadastrar os alunos;
-2. Escrever as informações recebidas pela planinha numa mensageria
+2. Escrever as informações recebidas pela planilha numa mensageria
 (ex.: Kafka, Rabitt MQ) para enviar os e-mails posteriormente.
