@@ -2,23 +2,26 @@ package br.com.grades.email.sender.util;
 
 import br.com.grades.email.sender.domain.EmailInfo;
 import br.com.grades.email.sender.domain.EmailModel;
+import br.com.grades.email.sender.domain.EmailResponse;
 import br.com.grades.email.sender.domain.Student;
 import br.com.grades.email.sender.exception.InternalServerErrorException;
 import com.opencsv.CSVWriter;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
 
 @Slf4j
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class CsvConverter {
 
     private static final String COMMA_DELIMITER = ";";
@@ -26,7 +29,7 @@ public class CsvConverter {
 
     public static List<EmailInfo> convertCsvToList(InputStream inputStream) {
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, UTF_8))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, ISO_8859_1))) {
 
             return extractEmailInfosFromCsv(br);
 
@@ -69,7 +72,7 @@ public class CsvConverter {
                 .build();
     }
 
-    public static byte[] convertListToCsv(List<EmailModel> emails) {
+    public static byte[] convertListToCsv(List<EmailResponse> emails) {
         log.info("Convertendo lista para csv.");
 
         generateCsv(emails);
@@ -82,7 +85,7 @@ public class CsvConverter {
         }
     }
 
-    private static void generateCsv(List<EmailModel> emails) {
+    private static void generateCsv(List<EmailResponse> emails) {
         log.info("Gerando arquivo csv.");
 
         try (
@@ -119,16 +122,13 @@ public class CsvConverter {
         return headers;
     }
 
-    private static String[] getData(EmailModel email) {
-
-        var dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        var date = email.getSendDate().format(dateFormat);
+    private static String[] getData(EmailResponse email) {
 
         return new String[]{
                 email.getSendTo(),
                 email.getSubject(),
                 email.getText(),
-                date,
+                email.getSendDate(),
                 email.getStatus()
         };
     }

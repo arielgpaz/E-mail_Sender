@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -45,13 +46,14 @@ public class EmailFilesController {
     }
 
     @GetMapping(value = "/download", produces = "text/csv")
-    public ResponseEntity<byte[]> getGradesCsv(@RequestParam(required = false) String status,
+    public ResponseEntity<byte[]> getGradesCsv(@RequestParam(required = false) List<Long> ids,
+                                               @RequestParam(required = false) String status,
                                                @RequestParam(required = false) String to,
                                                @RequestParam(required = false) LocalDateTime startDate,
                                                @RequestParam(required = false) LocalDateTime endDate) {
         log.info("Gerando csv de emails com status {}, enviados entre {} e {}.", status, startDate, endDate);
 
-        byte[] file = downloadEmailsService.getCsvFile(status, to, startDate, endDate);
+        byte[] file = downloadEmailsService.getCsvFile(ids, status, to, startDate, endDate);
 
         return ResponseEntity.ok(file);
     }

@@ -1,6 +1,6 @@
 package br.com.grades.email.sender.service;
 
-import br.com.grades.email.sender.domain.EmailModel;
+import br.com.grades.email.sender.domain.EmailResponse;
 import br.com.grades.email.sender.exception.NotFoundException;
 import br.com.grades.email.sender.util.CsvConverter;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +17,10 @@ public class DownloadEmailsService {
 
     private final EmailConsultsService emailConsultsService;
 
-    public byte[] getCsvFile(String status, String to, LocalDateTime startDate, LocalDateTime endDate) {
+    public byte[] getCsvFile(List<Long> ids, String status, String to, LocalDateTime startDate, LocalDateTime endDate) {
 
         log.info("Buscando emails.");
-        List<EmailModel> emails = emailConsultsService.getEmails(status, to, startDate, endDate);
+        List<EmailResponse> emails = emailConsultsService.getEmails(ids, status, to, startDate, endDate);
 
         if (emails.isEmpty()) {
             log.error("Nenhum email encontrado");

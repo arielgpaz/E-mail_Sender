@@ -5,12 +5,22 @@ import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 public class EmailSpecifications {
+
+    public static Specification<EmailModel> byIds(List<Long> ids) {
+        return (root, query, criteriaBuilder) -> {
+            if (nonNull(ids)) {
+                return root.get("id").in(ids);
+            }
+            return null;
+        };
+    }
 
     public static Specification<EmailModel> byStatus(String status) {
         return (root, query, criteriaBuilder) -> {
